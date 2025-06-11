@@ -1,0 +1,61 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# Establecer el directorio base
+RewriteBase /api/
+
+# Permitir acceso a archivos y directorios existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todas las solicitudes a index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Configuración de seguridad
+# Deshabilitar listado de directorios
+Options -Indexes
+
+# Proteger archivos sensibles
+<FilesMatch "^(database\.php|schema\.sql|\.env|\.git)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Configuración de CORS
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# Configuración de PHP
+php_flag display_errors off
+php_value upload_max_filesize 5M
+php_value post_max_size 6M
+php_value max_execution_time 30
+php_value max_input_time 60
+
+# Compresión GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Caché del navegador
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>
